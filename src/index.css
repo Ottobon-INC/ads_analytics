@@ -1,6 +1,7 @@
 /* ==========================================================================
    AdPulse Design System — Clean Luxury White / Minimalist Dashboard
    Style: Apple / Linear / Stripe aesthetic (Crisp White, Soft Slate, Refined Accents)
+   Includes Full Tablet (iPad / 768px-1024px) & Mobile Responsiveness
    ========================================================================== */
 
 :root {
@@ -136,29 +137,11 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #CBD5E1;
 }
 
-.glass-card-interactive {
-  cursor: pointer;
-}
-
-.glass-card-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  border-color: #A5B4FC;
-}
-
 .glass-panel {
   background: #FFFFFF;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-}
-
-/* Gradient Texts */
-.gradient-text-primary {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* Buttons */
@@ -291,11 +274,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Animations */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -311,49 +289,13 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes livePulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(5, 150, 105, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
-}
-
-.live-indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #059669;
-  animation: livePulse 2s infinite;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 .animate-spin-fast {
   animation: spin 0.8s linear infinite;
-}
-
-/* Skeleton Loading Shimmer */
-.skeleton {
-  background: #E2E8F0;
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-sm);
-}
-
-.skeleton::after {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(255, 255, 255, 0.5) 20%,
-    rgba(255, 255, 255, 0.8) 60%,
-    rgba(255, 255, 255, 0)
-  );
-  animation: shimmer 1.8s infinite;
-  content: '';
 }
 
 /* Custom Tooltip */
@@ -367,33 +309,79 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 12px;
 }
 
-/* Kanban Board Column Styles (Light Palette) */
-.kanban-col {
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
-  border-radius: var(--radius-md);
-  padding: 14px;
-  min-height: 480px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.kanban-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+/* Skeleton Loading Shimmer */
+.skeleton {
+  background: #E2E8F0;
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius-sm);
-  padding: 14px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.kanban-card:hover {
-  transform: translateY(-2px);
-  border-color: #CBD5E1;
-  box-shadow: var(--shadow-md);
+/* ==========================================================================
+   📱 TABLET & MOBILE RESPONSIVENESS (Breakpoints: 1024px, 768px, 640px)
+   ========================================================================== */
+
+/* Main App Wrapper */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--bg-app);
+}
+
+/* Main Content Area */
+.app-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+.app-page-wrapper {
+  flex: 1;
+  padding: 28px;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Tablet (iPad Portrait & Landscape 768px - 1024px) */
+@media (max-width: 1024px) {
+  .app-page-wrapper {
+    padding: 20px 16px;
+  }
+  
+  .responsive-2col {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .responsive-hero {
+    padding: 20px !important;
+  }
+}
+
+/* Mobile & Small Tablets (< 768px) */
+@media (max-width: 768px) {
+  .app-page-wrapper {
+    padding: 16px 12px;
+  }
+
+  .topbar-header {
+    padding: 12px 16px !important;
+    gap: 12px !important;
+  }
+
+  .responsive-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .responsive-filter-bar {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .responsive-filter-bar > div:first-child {
+    grid-column: span 1 !important;
+  }
 }

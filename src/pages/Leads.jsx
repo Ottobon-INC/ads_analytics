@@ -14,6 +14,7 @@ export default function Leads({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Top Banner with City & Contact Slot Summaries */}
       <div 
+        className="responsive-2col"
         style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 

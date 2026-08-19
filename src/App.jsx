@@ -19,6 +19,7 @@ import LeadDetailModal from './components/leads/LeadDetailModal';
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedLead, setSelectedLead] = useState(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Data fetching hook connected to user's real Google Sheet
   const {
@@ -98,15 +99,17 @@ export default function App() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100%', background: 'var(--bg-app)' }}>
+    <div className="app-container">
       {/* Sidebar Navigation */}
       <Sidebar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Main Content Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div className="app-main-content">
         {/* Top Bar */}
         <TopBar
           dateRange={dateRange}
@@ -115,10 +118,11 @@ export default function App() {
           isRefreshing={isRefreshing}
           lastSyncTime={lastSyncTime}
           error={error}
+          onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         />
 
         {/* Dynamic Page Content */}
-        <main style={{ flex: 1, padding: '28px', maxWidth: '1600px', width: '100%', margin: '0 auto' }}>
+        <main className="app-page-wrapper">
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div className="skeleton" style={{ height: '120px' }} />

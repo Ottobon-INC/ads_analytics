@@ -27,7 +27,7 @@ export default function Overview({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Live Google Sheet Connected Hero Header */}
       <div 
-        className="glass-card" 
+        className="glass-card responsive-hero" 
         style={{ 
           padding: '24px 28px',
           background: 'linear-gradient(135deg, #EEF2FF 0%, #F8FAFC 100%)',
@@ -71,6 +71,7 @@ export default function Overview({
 
       {/* KPI Cards Row */}
       <div 
+        className="responsive-kpi-grid"
         style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
@@ -96,9 +97,10 @@ export default function Overview({
 
       {/* Row 2: City Geographic Split & Preferred Call Slots */}
       <div 
+        className="responsive-2col"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', 
           gap: '20px' 
         }}
       >
@@ -106,9 +108,9 @@ export default function Overview({
         <ContactSlotBar data={contactSlotBreakdown} />
       </div>
 
-      {/* Row 3: Recent Lead Activity Feed Table (Shifted Up) */}
+      {/* Row 3: Recent Lead Activity Feed Table */}
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
           <div>
             <h3 style={{ fontSize: '18px', color: 'var(--text-primary)' }}>Recent Lead Activity</h3>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Latest incoming entries from your Google Sheet</p>

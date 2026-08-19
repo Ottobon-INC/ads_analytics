@@ -9,8 +9,7 @@ import {
   Save, 
   Check, 
   Copy, 
-  PhoneCall,
-  UserCheck
+  PhoneCall
 } from 'lucide-react';
 
 const STATUS_OPTIONS = ['New', 'Contacted', 'In Progress', 'Qualified', 'Converted', 'Lost'];
@@ -61,8 +60,8 @@ export default function LeadDetailModal({
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(15, 23, 42, 0.5)',
+        backdropFilter: 'blur(4px)',
         zIndex: 1000,
         display: 'flex',
         justifyContent: 'flex-end',
@@ -74,30 +73,31 @@ export default function LeadDetailModal({
         className="glass-panel"
         style={{
           width: '100%',
-          maxWidth: '520px',
+          maxWidth: '500px',
           height: '100%',
-          padding: '28px',
+          padding: '24px',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
+          gap: '18px',
           animation: 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-          borderLeft: '1px solid rgba(87, 70, 227, 0.3)'
+          borderLeft: '1px solid var(--border-subtle)',
+          boxShadow: 'var(--shadow-lg)'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#4F46E5', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Lead Profile & Contact Card
             </span>
             <h2 style={{ fontSize: '22px', color: 'var(--text-primary)', marginTop: '2px' }}>
               {lead.name}
             </h2>
             <div style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-              <MapPin size={14} color="var(--primary-light)" />
-              <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{lead.city || 'Location N/A'}</span>
+              <MapPin size={14} color="#4F46E5" />
+              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{lead.city || 'Location N/A'}</span>
             </div>
           </div>
           <button 
@@ -115,7 +115,7 @@ export default function LeadDetailModal({
             <a 
               href={`tel:${lead.phone}`}
               className="btn btn-secondary"
-              style={{ padding: '10px', fontSize: '12px', color: '#38BDF8' }}
+              style={{ padding: '10px', fontSize: '12px', color: '#0284C7' }}
             >
               <Phone size={15} /> Call ({lead.phone})
             </a>
@@ -126,7 +126,7 @@ export default function LeadDetailModal({
               target="_blank"
               rel="noreferrer"
               className="btn btn-secondary"
-              style={{ padding: '10px', fontSize: '12px', color: '#34D399' }}
+              style={{ padding: '10px', fontSize: '12px', color: '#059669' }}
             >
               <MessageSquare size={15} /> WhatsApp
             </a>
@@ -137,19 +137,19 @@ export default function LeadDetailModal({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <div className="glass-card" style={{ padding: '14px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Clock size={13} color="#F59E0B" /> Preferred Time Slot
+              <Clock size={13} color="#D97706" /> Preferred Slot
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: '#FBBF24', marginTop: '4px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: '#D97706', marginTop: '4px' }}>
               {lead.contactTime || 'Anytime'} {lead.time ? `(${lead.time})` : ''}
             </div>
           </div>
 
           <div className="glass-card" style={{ padding: '14px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <PhoneCall size={13} color="#38BDF8" /> Call Attempts
+              <PhoneCall size={13} color="#0284C7" /> Call Attempts
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span className="mono" style={{ fontSize: '14px', fontWeight: 700, color: '#38BDF8' }}>
+              <span className="mono" style={{ fontSize: '14px', fontWeight: 700, color: '#0284C7' }}>
                 {attempts} calls
               </span>
               <button 
@@ -175,7 +175,7 @@ export default function LeadDetailModal({
             style={{ fontSize: '14px', fontWeight: 600 }}
           >
             {STATUS_OPTIONS.map(opt => (
-              <option key={opt} value={opt} style={{ background: '#0E1424', color: '#F8FAFC' }}>
+              <option key={opt} value={opt}>
                 {opt}
               </option>
             ))}
@@ -195,7 +195,7 @@ export default function LeadDetailModal({
                 style={{ padding: '2px 4px' }}
                 onClick={() => handleCopy(lead.phone, 'phone')}
               >
-                {copiedField === 'phone' ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                {copiedField === 'phone' ? <Check size={12} color="#059669" /> : <Copy size={12} />}
               </button>
             </div>
           </div>
@@ -219,14 +219,14 @@ export default function LeadDetailModal({
           </div>
         </div>
 
-        {/* CRM Discussion Notes Editor */}
+        {/* Discussion Notes Editor */}
         <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <label style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
-              Follow-Up & Discussion Notes
+              Discussion Notes
             </label>
             {isSaved && (
-              <span style={{ fontSize: '11px', color: '#10B981', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              <span style={{ fontSize: '11px', color: '#059669', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
                 <Check size={12} /> Changes Saved!
               </span>
             )}

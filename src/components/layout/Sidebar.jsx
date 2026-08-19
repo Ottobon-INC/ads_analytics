@@ -5,7 +5,8 @@ import {
   Settings, 
   FileSpreadsheet, 
   ExternalLink, 
-  BarChart3 
+  BarChart3,
+  X 
 } from 'lucide-react';
 import { USER_LIVE_SHEET_URL } from '../../config/sheets';
 
@@ -17,129 +18,177 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ 
   activeTab, 
-  onSelectTab
+  onSelectTab,
+  isOpen = false,
+  onClose
 }) {
+  const handleItemClick = (id) => {
+    onSelectTab(id);
+    if (onClose) onClose();
+  };
+
   return (
-    <aside 
-      style={{
-        width: '250px',
-        minWidth: '250px',
-        height: '100vh',
-        position: 'sticky',
-        top: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: '24px 16px',
-        background: '#FFFFFF',
-        borderRight: '1px solid var(--border-subtle)',
-        zIndex: 10
-      }}
-    >
-      {/* Brand Header */}
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '0 8px', marginBottom: '32px' }}>
-          <div 
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
-              background: '#4F46E5',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)'
-            }}
-          >
-            <BarChart3 size={20} color="#FFFFFF" />
-          </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '17px', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-              Ad Analytics
-            </div>
-            <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-              Live Dashboard
-            </div>
-          </div>
-        </div>
+    <>
+      {/* Mobile / Tablet Overlay Backdrop */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 99,
+            display: 'block'
+          }}
+        />
+      )}
 
-        {/* Navigation Items */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-
-            return (
-              <button
-                key={item.id}
-                onClick={() => onSelectTab(item.id)}
+      {/* Sidebar Navigation Panel */}
+      <aside 
+        style={{
+          width: '250px',
+          minWidth: '250px',
+          height: '100vh',
+          position: 'sticky',
+          top: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '24px 16px',
+          background: '#FFFFFF',
+          borderRight: '1px solid var(--border-subtle)',
+          zIndex: 100,
+          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+          // Responsive drawer positioning for screens <= 1024px
+          ...(typeof window !== 'undefined' && window.innerWidth <= 1024 ? {
+            position: 'fixed',
+            left: 0,
+            transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+            boxShadow: isOpen ? 'var(--shadow-lg)' : 'none'
+          } : {})
+        }}
+        className={isOpen ? 'sidebar-open' : ''}
+      >
+        {/* Brand Header */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', marginBottom: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div 
                 style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  background: '#4F46E5',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  width: '100%',
-                  padding: '10px 14px',
-                  borderRadius: '10px',
-                  border: 'none',
-                  background: isActive ? '#EEF2FF' : 'transparent',
-                  color: isActive ? '#4F46E5' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  transition: 'all var(--transition-fast)',
-                  textAlign: 'left'
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = '#F8FAFC';
-                    e.currentTarget.style.color = 'var(--text-primary)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                  }
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)'
                 }}
               >
-                <Icon size={18} color={isActive ? '#4F46E5' : 'currentColor'} />
-                {item.label}
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+                <BarChart3 size={20} color="#FFFFFF" />
+              </div>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: '17px', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                  Ad Analytics
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
+                  Live Dashboard
+                </div>
+              </div>
+            </div>
 
-      {/* Bottom Live Sheet Status Card */}
-      <div>
-        <div 
-          style={{
-            padding: '14px 16px',
-            background: '#F8FAFC',
-            borderRadius: '12px',
-            border: '1px solid var(--border-subtle)',
-            fontSize: '12px'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <FileSpreadsheet size={15} color="#059669" /> Google Sheet
-            </span>
-            <a 
-              href={USER_LIVE_SHEET_URL} 
-              target="_blank" 
-              rel="noreferrer" 
-              style={{ color: '#4F46E5', display: 'flex', alignItems: 'center' }}
-              title="Open Google Sheet in new tab"
+            {/* Close button for tablet / mobile */}
+            <button
+              className="btn btn-ghost btn-icon close-sidebar-btn"
+              onClick={onClose}
+              style={{ padding: '6px', borderRadius: '8px' }}
             >
-              <ExternalLink size={13} />
-            </a>
+              <X size={18} />
+            </button>
           </div>
-          <p style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.4 }}>
-            Syncing data in real-time.
-          </p>
+
+          {/* Navigation Items */}
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleItemClick(item.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    width: '100%',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: isActive ? '#EEF2FF' : 'transparent',
+                    color: isActive ? '#4F46E5' : 'var(--text-secondary)',
+                    fontWeight: isActive ? 700 : 500,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast)',
+                    textAlign: 'left'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = '#F8FAFC';
+                      e.currentTarget.style.color = 'var(--text-primary)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'var(--text-secondary)';
+                    }
+                  }}
+                >
+                  <Icon size={18} color={isActive ? '#4F46E5' : 'currentColor'} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </nav>
         </div>
-      </div>
-    </aside>
+
+        {/* Bottom Live Sheet Status Card */}
+        <div>
+          <div 
+            style={{
+              padding: '14px 16px',
+              background: '#F8FAFC',
+              borderRadius: '12px',
+              border: '1px solid var(--border-subtle)',
+              fontSize: '12px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <FileSpreadsheet size={15} color="#059669" /> Google Sheet
+              </span>
+              <a 
+                href={USER_LIVE_SHEET_URL} 
+                target="_blank" 
+                rel="noreferrer" 
+                style={{ color: '#4F46E5', display: 'flex', alignItems: 'center' }}
+                title="Open Google Sheet in new tab"
+              >
+                <ExternalLink size={13} />
+              </a>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: 1.4 }}>
+              Syncing data in real-time.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

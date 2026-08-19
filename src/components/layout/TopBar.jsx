@@ -4,7 +4,8 @@ import {
   RefreshCw, 
   Clock, 
   AlertTriangle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Menu
 } from 'lucide-react';
 import { USER_LIVE_SHEET_URL } from '../../config/sheets';
 
@@ -23,7 +24,8 @@ export default function TopBar({
   onRefresh,
   isRefreshing,
   lastSyncTime,
-  error
+  error,
+  onToggleMobileSidebar
 }) {
   const [timeAgo, setTimeAgo] = useState('just now');
 
@@ -45,13 +47,14 @@ export default function TopBar({
 
   return (
     <header 
+      className="topbar-header"
       style={{
-        padding: '16px 28px',
+        padding: '14px 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '16px',
+        gap: '12px',
         background: '#FFFFFF',
         borderBottom: '1px solid var(--border-subtle)',
         position: 'sticky',
@@ -59,48 +62,61 @@ export default function TopBar({
         zIndex: 9
       }}
     >
-      {/* Date Range Selector Pills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '13px', marginRight: '4px', fontWeight: 500 }}>
-          <Calendar size={15} color="#4F46E5" /> Range:
-        </div>
-        <div style={{ display: 'flex', background: '#F1F5F9', padding: '3px', borderRadius: '10px' }}>
-          {DATE_RANGE_OPTIONS.map((opt) => {
-            const isActive = dateRange === opt.id;
-            return (
-              <button
-                key={opt.id}
-                onClick={() => onChangeDateRange(opt.id)}
-                className={`btn btn-sm ${isActive ? 'btn-primary' : 'btn-ghost'}`}
-                style={{
-                  fontSize: '12px',
-                  padding: '5px 12px',
-                  borderRadius: '7px',
-                  background: isActive ? '#FFFFFF' : 'transparent',
-                  color: isActive ? '#0F172A' : 'var(--text-secondary)',
-                  boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                  fontWeight: isActive ? 700 : 500
-                }}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
+      {/* Left: Hamburger button for Tablet & Mobile + Date Filter */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        {/* Tablet Hamburger Toggle */}
+        <button
+          className="btn btn-secondary btn-icon tablet-menu-btn"
+          onClick={onToggleMobileSidebar}
+          style={{ padding: '6px 8px', borderRadius: '8px' }}
+          title="Open Navigation Menu"
+        >
+          <Menu size={18} color="var(--text-primary)" />
+        </button>
+
+        {/* Date Range Selector Pills */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 500 }}>
+            <Calendar size={14} color="#4F46E5" /> Range:
+          </div>
+          <div style={{ display: 'flex', background: '#F1F5F9', padding: '3px', borderRadius: '10px', flexWrap: 'wrap', gap: '2px' }}>
+            {DATE_RANGE_OPTIONS.map((opt) => {
+              const isActive = dateRange === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => onChangeDateRange(opt.id)}
+                  className={`btn btn-sm ${isActive ? 'btn-primary' : 'btn-ghost'}`}
+                  style={{
+                    fontSize: '11px',
+                    padding: '4px 10px',
+                    borderRadius: '7px',
+                    background: isActive ? '#FFFFFF' : 'transparent',
+                    color: isActive ? '#0F172A' : 'var(--text-secondary)',
+                    boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                    fontWeight: isActive ? 700 : 500
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Sync Status & Action Buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      {/* Right: Sync Status & Action Buttons */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
         {/* Live Google Sheet Link */}
         <a 
           href={USER_LIVE_SHEET_URL}
           target="_blank"
           rel="noreferrer"
           className="btn btn-secondary btn-sm"
-          style={{ fontSize: '12px', padding: '6px 12px', color: 'var(--text-primary)' }}
+          style={{ fontSize: '12px', padding: '6px 10px', color: 'var(--text-primary)' }}
         >
           <FileSpreadsheet size={14} color="#059669" />
-          <span>View Spreadsheet</span>
+          <span>Spreadsheet</span>
         </a>
 
         {/* Sync Status badge */}
@@ -108,23 +124,23 @@ export default function TopBar({
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '6px', 
-            fontSize: '12px', 
+            gap: '5px', 
+            fontSize: '11px', 
             color: error ? '#E11D48' : 'var(--text-secondary)',
             background: '#F8FAFC',
-            padding: '6px 12px',
+            padding: '5px 10px',
             borderRadius: '8px',
             border: '1px solid var(--border-subtle)'
           }}
         >
           {error ? (
             <>
-              <AlertTriangle size={14} color="#E11D48" />
+              <AlertTriangle size={13} color="#E11D48" />
               <span>Sync Alert</span>
             </>
           ) : (
             <>
-              <Clock size={14} color="#059669" />
+              <Clock size={13} color="#059669" />
               <span>Synced {timeAgo}</span>
             </>
           )}
@@ -135,10 +151,10 @@ export default function TopBar({
           className="btn btn-secondary btn-sm"
           onClick={onRefresh}
           disabled={isRefreshing}
-          style={{ padding: '7px 14px' }}
+          style={{ padding: '6px 12px' }}
           title="Refresh Data from Google Sheet"
         >
-          <RefreshCw size={14} className={isRefreshing ? 'animate-spin-fast' : ''} />
+          <RefreshCw size={13} className={isRefreshing ? 'animate-spin-fast' : ''} />
           <span>{isRefreshing ? 'Syncing...' : 'Sync'}</span>
         </button>
       </div>
