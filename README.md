@@ -7,7 +7,7 @@ A clean, modern Analytics and Lead Management Dashboard built with **React**, **
 ## 🚀 Features
 
 - **🔴 Live Google Sheet Sync**: Streams lead data dynamically from public Google Sheets (with 30-second auto-refresh and manual sync).
-- **🗺️ City & Territory Distribution**: Interactive Donut chart displaying geographic lead density.
+- **🗺️ City & Territory Distribution**: Interactive Donut chart displaying geographic lead density (*Visakhapatnam*).
 - **⏰ Best Time to Call Analytics**: Horizontal bar chart comparing prospect availability across Morning, Afternoon, and Evening slots.
 - **📈 Inbound Volume Timeline**: Area chart tracking daily lead inflow over time.
 - **📋 CRM Data Table**:
@@ -28,32 +28,34 @@ A clean, modern Analytics and Lead Management Dashboard built with **React**, **
 - **Charts**: Recharts
 - **CSV Stream Engine**: PapaParse
 - **Icons**: Lucide React
+- **Containerization**: Docker & Nginx Alpine (Port 8081)
 
 ---
 
-## 📦 Getting Started
+## 🐳 Docker Deployment on Ubuntu VPS (Port 8081)
 
-### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/ad-analytics.git
-cd ad-analytics
+# 1. Clone the repository
+git clone https://github.com/Ottobon-INC/ads_analytics.git
+cd ads_analytics
+
+# 2. Build and launch container on Port 8081
+docker-compose up -d --build
 ```
+Access dashboard at **`http://YOUR_SERVER_IP:8081/`**.
 
-### 2. Install dependencies
+---
+
+## 📦 Local Development
+
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### 3. Run development server
-```bash
+# 2. Start local development server on Port 8081
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-### 4. Build for production
-```bash
-npm run build
-```
+Open **`http://localhost:8081`** in your browser.
 
 ---
 
