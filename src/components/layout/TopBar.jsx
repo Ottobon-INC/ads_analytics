@@ -62,14 +62,14 @@ export default function TopBar({
         zIndex: 9
       }}
     >
-      {/* Left: Hamburger button for Tablet & Mobile + Date Filter */}
+      {/* Left: Tablet Hamburger Trigger & Date Filter */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-        {/* Tablet Hamburger Toggle */}
+        {/* Hamburger button visible only on Tablet & Mobile */}
         <button
-          className="btn btn-secondary btn-icon tablet-menu-btn"
+          className="btn btn-secondary btn-icon tablet-hamburger-btn"
           onClick={onToggleMobileSidebar}
-          style={{ padding: '6px 8px', borderRadius: '8px' }}
-          title="Open Navigation Menu"
+          style={{ padding: '7px 9px', borderRadius: '8px' }}
+          title="Open Menu"
         >
           <Menu size={18} color="var(--text-primary)" />
         </button>

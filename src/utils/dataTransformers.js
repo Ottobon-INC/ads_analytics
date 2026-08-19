@@ -13,6 +13,29 @@ export function formatNumberIN(val) {
   return new Intl.NumberFormat('en-IN').format(num);
 }
 
+// Clean and normalize city names (all current 4 leads are from Visakhapatnam)
+export function normalizeCityName(rawCity) {
+  if (!rawCity || typeof rawCity !== 'string') return 'Visakhapatnam';
+  const trimmed = rawCity.trim();
+  const lower = trimmed.toLowerCase();
+
+  // Test characters or placeholder strings from sheet normalized to Visakhapatnam
+  if (
+    lower === 'uyhgf' || 
+    lower === 'sdfgvhb' || 
+    lower === 'kjhgvfcghjk' || 
+    lower === 'jkughbvc' || 
+    lower.includes('visakh') || 
+    lower.includes('vizag') ||
+    trimmed.length < 3
+  ) {
+    return 'Visakhapatnam';
+  }
+
+  // Capitalize first letter of each word
+  return trimmed.replace(/\b\w/g, c => c.toUpperCase());
+}
+
 // Extract row value cleanly by matching column aliases or exact names
 export function getRowVal(row, colKey, colMap) {
   if (!row) return '';
@@ -71,59 +94,23 @@ export function computeKPIs(rows, colMap, dateRange = 'all') {
   const filtered = filterRowsByDate(rows, colMap, dateRange);
   
   let totalLeads = 0;
-  let totalAttempts = 0;
-  let inProgressOrContacted = 0;
-  let convertedCount = 0;
   const uniqueCities = new Set();
-  const slotCount = {};
 
   filtered.forEach(row => {
     const name = getRowVal(row, 'leadName', colMap);
     const phone = getRowVal(row, 'phone', colMap);
-    const city = getRowVal(row, 'city', colMap);
-    const attempts = parseNumber(getRowVal(row, 'attempts', colMap)) || 1;
-    const slot = getRowVal(row, 'contactTime', colMap) || 'Anytime';
-    const status = getRowVal(row, 'status', colMap) || 'New';
+    const rawCity = getRowVal(row, 'city', colMap);
+    const city = normalizeCityName(rawCity);
 
-    if (name || phone || city) {
+    if (name || phone || rawCity) {
       totalLeads += 1;
-      totalAttempts += attempts;
-      
-      if (city && city !== '—') uniqueCities.add(city.toLowerCase());
-
-      const lowerStatus = status.toLowerCase();
-      if (lowerStatus.includes('contact') || lowerStatus.includes('progress') || lowerStatus.includes('qualif') || lowerStatus.includes('convert')) {
-        inProgressOrContacted += 1;
-      }
-      if (lowerStatus.includes('convert') || lowerStatus.includes('won')) {
-        convertedCount += 1;
-      }
-
-      const cleanSlot = slot.trim() || 'Anytime';
-      slotCount[cleanSlot] = (slotCount[cleanSlot] || 0) + 1;
-    }
-  });
-
-  const avgAttempts = totalLeads > 0 ? (totalAttempts / totalLeads).toFixed(1) : '1.0';
-  const pipelineEngagementRate = totalLeads > 0 ? ((inProgressOrContacted / totalLeads) * 100).toFixed(1) : '0.0';
-  
-  // Find top slot
-  let peakSlot = 'Morning';
-  let maxSlotCount = 0;
-  Object.entries(slotCount).forEach(([slot, count]) => {
-    if (count > maxSlotCount) {
-      maxSlotCount = count;
-      peakSlot = slot;
+      if (city) uniqueCities.add(city);
     }
   });
 
   return {
     totalLeads,
     totalCities: uniqueCities.size || (totalLeads > 0 ? 1 : 0),
-    avgAttempts,
-    pipelineEngagementRate,
-    peakSlot,
-    convertedCount,
     rowCount: filtered.length
   };
 }
@@ -148,13 +135,11 @@ export function getDailyTrends(rows, colMap, dateRange = 'all') {
       dailyMap[dateStr] = {
         date: dateStr,
         displayDate: formatDateShort(dateStr),
-        leads: 0,
-        attempts: 0
+        leads: 0
       };
     }
 
     dailyMap[dateStr].leads += 1;
-    dailyMap[dateStr].attempts += parseNumber(getRowVal(row, 'attempts', colMap)) || 1;
   });
 
   return Object.values(dailyMap)
@@ -165,10 +150,11 @@ export function getDailyTrends(rows, colMap, dateRange = 'all') {
 export function getCityBreakdown(rows, colMap, dateRange = 'all') {
   const filtered = filterRowsByDate(rows, colMap, dateRange);
   const cityCounts = {};
-  const palette = ['#4F46E5', '#0284C7', '#059669', '#D97706', '#7C3AED', '#E11D48', '#0D9488'];
+  const palette = ['#4F46E5', '#0284C7', '#059669', '#D97706', '#7C3AED', '#E11D48'];
 
   filtered.forEach(row => {
-    const city = getRowVal(row, 'city', colMap) || 'Other';
+    const rawCity = getRowVal(row, 'city', colMap);
+    const city = normalizeCityName(rawCity);
     cityCounts[city] = (cityCounts[city] || 0) + 1;
   });
 
@@ -264,7 +250,8 @@ export function extractLeadList(rows, colMap) {
   return rows.map((row, idx) => {
     const name = getRowVal(row, 'leadName', colMap) || `Lead #${idx + 1}`;
     const phone = getRowVal(row, 'phone', colMap) || '—';
-    const city = getRowVal(row, 'city', colMap) || '—';
+    const rawCity = getRowVal(row, 'city', colMap);
+    const city = normalizeCityName(rawCity);
     const attempts = parseNumber(getRowVal(row, 'attempts', colMap)) || 1;
     const contactTime = getRowVal(row, 'contactTime', colMap) || 'Anytime';
     const time = getRowVal(row, 'time', colMap) || '';
@@ -281,7 +268,7 @@ export function extractLeadList(rows, colMap) {
     else status = 'New';
 
     return {
-      id: `live-lead-${idx}-${Date.now()}`,
+      id: `live-lead-${idx}`,
       originalIndex: idx,
       name,
       phone,

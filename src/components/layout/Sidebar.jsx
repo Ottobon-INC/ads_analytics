@@ -29,64 +29,29 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Mobile / Tablet Overlay Backdrop */}
-      {isOpen && (
-        <div
-          onClick={onClose}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(15, 23, 42, 0.4)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 99,
-            display: 'block'
-          }}
-        />
-      )}
+      {/* Tablet / Mobile Backdrop Overlay */}
+      <div 
+        className={`sidebar-overlay ${isOpen ? 'active' : ''}`}
+        onClick={onClose}
+      />
 
-      {/* Sidebar Navigation Panel */}
-      <aside 
-        style={{
-          width: '250px',
-          minWidth: '250px',
-          height: '100vh',
-          position: 'sticky',
-          top: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '24px 16px',
-          background: '#FFFFFF',
-          borderRight: '1px solid var(--border-subtle)',
-          zIndex: 100,
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-          // Responsive drawer positioning for screens <= 1024px
-          ...(typeof window !== 'undefined' && window.innerWidth <= 1024 ? {
-            position: 'fixed',
-            left: 0,
-            transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-            boxShadow: isOpen ? 'var(--shadow-lg)' : 'none'
-          } : {})
-        }}
-        className={isOpen ? 'sidebar-open' : ''}
-      >
+      {/* Main Sidebar Navigation Panel */}
+      <aside className={`app-sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         {/* Brand Header */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', marginBottom: '32px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: '28px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div 
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '38px',
+                  height: '38px',
                   borderRadius: '10px',
                   background: '#4F46E5',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)'
+                  boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)',
+                  flexShrink: 0
                 }}
               >
                 <BarChart3 size={20} color="#FFFFFF" />
@@ -101,18 +66,19 @@ export default function Sidebar({
               </div>
             </div>
 
-            {/* Close button for tablet / mobile */}
+            {/* Close Button on Tablet Drawer */}
             <button
-              className="btn btn-ghost btn-icon close-sidebar-btn"
+              className="btn btn-ghost btn-icon sidebar-close-btn"
               onClick={onClose}
               style={{ padding: '6px', borderRadius: '8px' }}
+              title="Close Menu"
             >
               <X size={18} />
             </button>
           </div>
 
           {/* Navigation Items */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -126,7 +92,7 @@ export default function Sidebar({
                     alignItems: 'center',
                     gap: '12px',
                     width: '100%',
-                    padding: '10px 14px',
+                    padding: '11px 14px',
                     borderRadius: '10px',
                     border: 'none',
                     background: isActive ? '#EEF2FF' : 'transparent',
