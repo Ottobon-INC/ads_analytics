@@ -12,8 +12,8 @@ WORKDIR /app
 # Copy dependency definitions first to leverage Docker layer caching
 COPY package.json package-lock.json ./
 
-# Clean install all dependencies (including devDependencies for Vite build)
-RUN npm ci
+# Install dependencies cleanly (with fallback for cross-platform lockfile resilience)
+RUN npm ci || npm install
 
 # Copy source code and config files
 COPY . .
