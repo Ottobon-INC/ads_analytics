@@ -5,7 +5,8 @@ import {
   DEFAULT_COLUMN_MAP, 
   autoDetectColumnMap, 
   generateMockData,
-  USER_LIVE_SHEET_URL
+  USER_LIVE_SHEET_URL,
+  GLOBAL_SHEETS
 } from '../config/sheets';
 
 // Convert any standard Google Sheet URL into the direct CSV URL
@@ -38,18 +39,29 @@ export function normalizeGoogleSheetUrl(rawUrl) {
 }
 
 export function useSheetData() {
-  const [sheetsList, setSheetsListState] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.SHEETS_LIST);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {}
-    // Migration from old single sheet
-    const oldUrl = localStorage.getItem(STORAGE_KEYS.SHEET_URL) || USER_LIVE_SHEET_URL;
-    return [{ id: 'default', name: 'Default Sheet', url: oldUrl }];
-  });
+  const [sheetsList, setSheetsListState] = useState([...GLOBAL_SHEETS]);
+
+  useEffect(() => {
+    fetch('/api/sheets')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSheetsListState(data);
+          // If the currently active sheet is not in the loaded list, reset it
+          const savedId = localStorage.getItem(STORAGE_KEYS.ACTIVE_SHEET_ID);
+          if (!savedId || !data.find(s => s.id === savedId)) {
+            setActiveSheetIdState(data[0].id);
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load global sheets from backend, falling back to local list.', err);
+      });
+  }, []);
 
   const [activeSheetId, setActiveSheetIdState] = useState(() => {
-    return localStorage.getItem(STORAGE_KEYS.ACTIVE_SHEET_ID) || 'default';
+    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_SHEET_ID);
+    return saved || (GLOBAL_SHEETS.length > 0 ? GLOBAL_SHEETS[0].id : 'default');
   });
 
   // Derived active sheet URL
@@ -94,7 +106,11 @@ export function useSheetData() {
 
   const setSheetsList = useCallback((newList) => {
     setSheetsListState(newList);
-    localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(newList));
+    fetch('/api/sheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheetsList: newList })
+    }).catch(err => console.error('Error saving sheets to backend:', err));
   }, []);
 
   const setActiveSheetId = useCallback((id) => {
@@ -106,7 +122,11 @@ export function useSheetData() {
     const newSheet = { id: Date.now().toString(), name, url };
     setSheetsListState(prev => {
       const updated = [...prev, newSheet];
-      localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(updated));
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sheetsList: updated })
+      }).catch(err => console.error('Error saving sheets to backend:', err));
       return updated;
     });
     setActiveSheetId(newSheet.id);
@@ -115,8 +135,13 @@ export function useSheetData() {
   const removeSheet = useCallback((id) => {
     setSheetsListState(prev => {
       const updated = prev.filter(s => s.id !== id);
-      localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(updated));
-      // If active sheet was removed, select first available or demo
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sheetsList: updated })
+      }).catch(err => console.error('Error saving sheets to backend:', err));
+      
+      // If active sheet was removed, select first available
       if (id === activeSheetId) {
         setActiveSheetId(updated.length > 0 ? updated[0].id : '');
       }

@@ -58,6 +58,8 @@ export default function App() {
     refreshSheetData();
   };
 
+  const activeSheetName = sheetsList.find(s => s.id === activeSheetId)?.name || 'Ad Analytics';
+
   // Metric Computations with useMemo
   const kpis = useMemo(() => {
     return computeKPIs(rawData, columnMap, dateRange);
@@ -152,6 +154,7 @@ export default function App() {
             <>
               {activeTab === 'overview' && (
                 <Overview
+                  activeSheetName={activeSheetName}
                   kpis={kpis}
                   dailyTrends={dailyTrends}
                   cityBreakdown={cityBreakdown}

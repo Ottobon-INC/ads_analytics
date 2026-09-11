@@ -1,0 +1,12 @@
+{
+  "sheetsList": [],
+  "columnMap": {
+    "leadName": "name",
+    "phone": "phone",
+    "city": "City",
+    "contactTime": "timeSlot",
+    "attempts": "Previus Attemps ",
+    "time": "timestamp",
+    "date": "timestamp"
+  }
+}

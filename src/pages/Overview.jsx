@@ -16,6 +16,7 @@ import { USER_LIVE_SHEET_URL } from '../config/sheets';
 import { IndianRupee, MousePointerClick, Activity } from 'lucide-react';
 
 export default function Overview({
+  activeSheetName = 'Ad Analytics',
   kpis,
   dailyTrends,
   cityBreakdown,
@@ -52,7 +53,7 @@ export default function Overview({
             </span>
           </div>
           <h2 style={{ fontSize: '24px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Ad Analytics Dashboard
+            {activeSheetName} Dashboard
           </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '780px', lineHeight: 1.5 }}>
             Real-time analytics for all inbound customer inquiries, city distribution, and call availability slots.

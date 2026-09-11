@@ -21,23 +21,24 @@ COPY . .
 RUN npm run build
 
 # --- Stage 2: Production Serving ---
-FROM nginx:alpine AS runner
+FROM node:20-alpine AS runner
 
-# Remove default Nginx website
-RUN rm -rf /usr/share/nginx/html/*
+WORKDIR /app
 
-# Copy custom Nginx configuration configured for port 8081
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy package.json and install production dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
 
-# Copy compiled static assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copy server script and built assets
+COPY server.js ./
+COPY --from=builder /app/dist ./dist
 
 # Expose HTTP port 8081
 EXPOSE 8081
 
-# Health check to ensure Nginx is actively responding on port 8081
+# Health check to ensure Node is actively responding on port 8081
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://127.0.0.1:8081/ || exit 1
 
-# Start Nginx in foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Start the Node.js server
+CMD ["node", "server.js"]

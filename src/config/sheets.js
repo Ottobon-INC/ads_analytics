@@ -3,6 +3,15 @@
 export const USER_LIVE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1LLvUhgc55mqXU0MYirIZhEGdtGJ63o2faOkEdUlyhm4/edit?usp=sharing';
 export const USER_LIVE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LLvUhgc55mqXU0MYirIZhEGdtGJ63o2faOkEdUlyhm4/export?format=csv';
 
+// Hardcoded sheets that will be visible to everyone who visits the website
+export const GLOBAL_SHEETS = [
+  {
+    id: 'medcy-ivf-camp',
+    name: 'Medcy IVF Camp leads',
+    url: 'https://docs.google.com/spreadsheets/d/1LLvUhgc55mqXU0MYirIZhEGdtGJ63o2faOkEdUlyhm4/edit?usp=sharing'
+  }
+];
+
 export const STORAGE_KEYS = {
   SHEET_URL: 'adpulse_sheet_url',
   SHEETS_LIST: 'adpulse_sheets_list',
