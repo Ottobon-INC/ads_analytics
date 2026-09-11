@@ -54,7 +54,16 @@ export function getRowVal(row, colKey, colMap) {
 // Date filtering helper
 export function filterRowsByDate(rows, colMap, dateRange) {
   if (!rows || !rows.length) return [];
-  if (!dateRange || dateRange === 'all') return rows;
+
+  // Filter out completely empty rows
+  const validRows = rows.filter(row => {
+    const name = getRowVal(row, 'leadName', colMap);
+    const phone = getRowVal(row, 'phone', colMap);
+    const rawCity = getRowVal(row, 'city', colMap);
+    return name || phone || rawCity;
+  });
+
+  if (!dateRange || dateRange === 'all') return validRows;
 
   const now = new Date();
   let startDate = new Date();
@@ -67,7 +76,7 @@ export function filterRowsByDate(rows, colMap, dateRange) {
     const endDate = new Date(startDate);
     endDate.setHours(23, 59, 59, 999);
     
-    return rows.filter(row => {
+    return validRows.filter(row => {
       const rawDate = getRowVal(row, 'date', colMap);
       if (!rawDate) return true;
       const d = new Date(rawDate);
@@ -81,7 +90,7 @@ export function filterRowsByDate(rows, colMap, dateRange) {
     startDate = new Date(now.getFullYear(), now.getMonth(), 1);
   }
 
-  return rows.filter(row => {
+  return validRows.filter(row => {
     const rawDate = getRowVal(row, 'date', colMap);
     if (!rawDate) return true;
     const d = new Date(rawDate);
@@ -97,15 +106,11 @@ export function computeKPIs(rows, colMap, dateRange = 'all') {
   const uniqueCities = new Set();
 
   filtered.forEach(row => {
-    const name = getRowVal(row, 'leadName', colMap);
-    const phone = getRowVal(row, 'phone', colMap);
     const rawCity = getRowVal(row, 'city', colMap);
     const city = normalizeCityName(rawCity);
 
-    if (name || phone || rawCity) {
-      totalLeads += 1;
-      if (city) uniqueCities.add(city);
-    }
+    totalLeads += 1;
+    if (city) uniqueCities.add(city);
   });
 
   return {

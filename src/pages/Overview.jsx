@@ -10,8 +10,10 @@ import SpendTrendChart from '../components/charts/SpendTrendChart';
 import CityDonut from '../components/charts/CityDonut';
 import ContactSlotBar from '../components/charts/ContactSlotBar';
 import LeadTable from '../components/leads/LeadTable';
+
 import { formatNumberIN } from '../utils/dataTransformers';
 import { USER_LIVE_SHEET_URL } from '../config/sheets';
+import { IndianRupee, MousePointerClick, Activity } from 'lucide-react';
 
 export default function Overview({
   kpis,
@@ -19,6 +21,7 @@ export default function Overview({
   cityBreakdown,
   contactSlotBreakdown,
   leads,
+
   onSelectLead,
   onUpdateStatus,
   onNavigateToTab
@@ -74,7 +77,7 @@ export default function Overview({
         className="responsive-kpi-grid"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
           gap: '16px' 
         }}
       >
@@ -93,9 +96,11 @@ export default function Overview({
           accentColor="blue"
           helperText="Geographic territories identified"
         />
+
       </div>
 
-      {/* Row 2: City Geographic Split & Preferred Call Slots */}
+
+      {/* Row 3: City Geographic Split & Preferred Call Slots */}
       <div 
         className="responsive-2col"
         style={{ 
@@ -108,7 +113,7 @@ export default function Overview({
         <ContactSlotBar data={contactSlotBreakdown} />
       </div>
 
-      {/* Row 3: Recent Lead Activity Feed Table */}
+      {/* Row 4: Recent Lead Activity Feed Table */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
           <div>
@@ -131,7 +136,7 @@ export default function Overview({
         />
       </div>
 
-      {/* Row 4: Inbound Lead Volume Timeline */}
+      {/* Row 5: Inbound Lead Volume Timeline */}
       <SpendTrendChart data={dailyTrends} />
     </div>
   );

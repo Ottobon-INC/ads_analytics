@@ -38,9 +38,23 @@ export function normalizeGoogleSheetUrl(rawUrl) {
 }
 
 export function useSheetData() {
-  const [sheetUrl, setSheetUrlState] = useState(() => {
-    return localStorage.getItem(STORAGE_KEYS.SHEET_URL) || USER_LIVE_SHEET_URL;
+  const [sheetsList, setSheetsListState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.SHEETS_LIST);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    // Migration from old single sheet
+    const oldUrl = localStorage.getItem(STORAGE_KEYS.SHEET_URL) || USER_LIVE_SHEET_URL;
+    return [{ id: 'default', name: 'Default Sheet', url: oldUrl }];
   });
+
+  const [activeSheetId, setActiveSheetIdState] = useState(() => {
+    return localStorage.getItem(STORAGE_KEYS.ACTIVE_SHEET_ID) || 'default';
+  });
+
+  // Derived active sheet URL
+  const activeSheet = sheetsList.find(s => s.id === activeSheetId) || sheetsList[0] || { url: '' };
+  const sheetUrl = activeSheet.url;
 
   const [columnMap, setColumnMapState] = useState(() => {
     try {
@@ -78,14 +92,37 @@ export function useSheetData() {
 
   const timerRef = useRef(null);
 
-  const setSheetUrl = useCallback((url) => {
-    setSheetUrlState(url);
-    if (url) {
-      localStorage.setItem(STORAGE_KEYS.SHEET_URL, url);
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.SHEET_URL);
-    }
+  const setSheetsList = useCallback((newList) => {
+    setSheetsListState(newList);
+    localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(newList));
   }, []);
+
+  const setActiveSheetId = useCallback((id) => {
+    setActiveSheetIdState(id);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_SHEET_ID, id);
+  }, []);
+
+  const addSheet = useCallback((name, url) => {
+    const newSheet = { id: Date.now().toString(), name, url };
+    setSheetsListState(prev => {
+      const updated = [...prev, newSheet];
+      localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(updated));
+      return updated;
+    });
+    setActiveSheetId(newSheet.id);
+  }, [setActiveSheetId]);
+
+  const removeSheet = useCallback((id) => {
+    setSheetsListState(prev => {
+      const updated = prev.filter(s => s.id !== id);
+      localStorage.setItem(STORAGE_KEYS.SHEETS_LIST, JSON.stringify(updated));
+      // If active sheet was removed, select first available or demo
+      if (id === activeSheetId) {
+        setActiveSheetId(updated.length > 0 ? updated[0].id : '');
+      }
+      return updated;
+    });
+  }, [activeSheetId, setActiveSheetId]);
 
   const setColumnMap = useCallback((map) => {
     setColumnMapState(map);
@@ -166,7 +203,13 @@ export function useSheetData() {
           // Auto-detect mappings for user's sheet
           const detected = autoDetectColumnMap(parsedHeaders);
           setColumnMapState(prev => {
-            const merged = { ...detected, ...prev };
+            const merged = { ...detected };
+            // Only keep previous manual overrides if that column actually exists in the current sheet
+            Object.keys(prev).forEach(key => {
+              if (parsedHeaders.includes(prev[key])) {
+                merged[key] = prev[key];
+              }
+            });
             localStorage.setItem(STORAGE_KEYS.COLUMN_MAP, JSON.stringify(merged));
             return merged;
           });
@@ -247,12 +290,16 @@ export function useSheetData() {
     error,
     lastSyncTime,
     isDemoMode,
+    sheetsList,
+    activeSheetId,
     sheetUrl,
     columnMap,
     refreshInterval,
     dateRange,
     crmOverrides,
-    setSheetUrl,
+    setActiveSheetId,
+    addSheet,
+    removeSheet,
     setColumnMap,
     setRefreshInterval,
     setDateRange,
@@ -260,7 +307,7 @@ export function useSheetData() {
     refreshData: () => fetchData(true),
     parseUploadedCSV,
     loadDemoData: () => {
-      setSheetUrl('');
+      setActiveSheetId('');
       fetchData();
     }
   };

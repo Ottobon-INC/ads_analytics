@@ -13,30 +13,37 @@ import {
 import { DEFAULT_COLUMN_MAP } from '../../config/sheets';
 
 export default function SheetConfig({
+  sheetsList = [],
+  activeSheetId,
+  addSheet,
+  removeSheet,
+  setActiveSheetId,
   sheetUrl,
   headers = [],
   columnMap = {},
   refreshInterval,
   isDemoMode,
   lastSyncTime,
-  onSaveSheetUrl,
-  onSaveColumnMap,
-  onSaveRefreshInterval,
   onUploadCSV,
   onLoadDemoData,
   onTestConnection
 }) {
-  const [inputUrl, setInputUrl] = useState(sheetUrl || '');
+  const [inputName, setInputName] = useState('');
+  const [inputUrl, setInputUrl] = useState('');
   const [tempColumnMap, setTempColumnMap] = useState({ ...columnMap });
   const [isSaved, setIsSaved] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
-  const handleUrlSubmit = (e) => {
+  const handleAddSheet = (e) => {
     e.preventDefault();
-    onSaveSheetUrl(inputUrl.trim());
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 2500);
+    if (inputName.trim() && inputUrl.trim()) {
+      addSheet(inputName.trim(), inputUrl.trim());
+      setInputName('');
+      setInputUrl('');
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2500);
+    }
   };
 
   const handleColumnMapChange = (fieldKey, selectedHeader) => {
@@ -140,10 +147,72 @@ export default function SheetConfig({
         <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link2 size={18} color="#4F46E5" />
-            <h3 style={{ fontSize: '16px', color: 'var(--text-primary)' }}>Google Sheets Public URL</h3>
+            <h3 style={{ fontSize: '16px', color: 'var(--text-primary)' }}>Connected Sheets</h3>
           </div>
 
-          <form onSubmit={handleUrlSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* List of Sheets */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
+            {sheetsList.length === 0 && (
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>No sheets connected yet.</p>
+            )}
+            {sheetsList.map((sheet) => (
+              <div 
+                key={sheet.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: `1px solid ${sheet.id === activeSheetId ? '#4F46E5' : 'var(--border-subtle)'}`,
+                  background: sheet.id === activeSheetId ? '#EEF2FF' : '#F8FAFC'
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{sheet.name}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {sheet.url}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {sheet.id !== activeSheetId && (
+                    <button 
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setActiveSheetId(sheet.id)}
+                      style={{ fontSize: '11px', padding: '4px 8px' }}
+                    >
+                      Select
+                    </button>
+                  )}
+                  <button 
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => removeSheet(sheet.id)}
+                    style={{ fontSize: '11px', padding: '4px 8px', color: '#E11D48', borderColor: '#FECDD3' }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h3 style={{ fontSize: '14px', color: 'var(--text-primary)', marginTop: '8px' }}>Add New Sheet</h3>
+          <form onSubmit={handleAddSheet} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
+                Sheet Name:
+              </label>
+              <input
+                type="text"
+                className="input-control"
+                placeholder="e.g. Q3 Leads"
+                value={inputName}
+                onChange={(e) => setInputName(e.target.value)}
+                required
+              />
+            </div>
+
+
             <div>
               <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>
                 Sheet Share or Published CSV Link:
@@ -161,16 +230,14 @@ export default function SheetConfig({
               <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
                 <Save size={14} /> Connect Sheet
               </button>
-              {inputUrl && (
                 <button 
                   type="button" 
                   className="btn btn-secondary"
-                  disabled={testing}
+                  disabled={testing || !inputUrl}
                   onClick={handleTest}
                 >
                   <RefreshCw size={14} className={testing ? 'animate-spin-fast' : ''} /> Test
                 </button>
-              )}
             </div>
 
             {testResult && (

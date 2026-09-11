@@ -5,6 +5,8 @@ export const USER_LIVE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1
 
 export const STORAGE_KEYS = {
   SHEET_URL: 'adpulse_sheet_url',
+  SHEETS_LIST: 'adpulse_sheets_list',
+  ACTIVE_SHEET_ID: 'adpulse_active_sheet_id',
   COLUMN_MAP: 'adpulse_column_map',
   REFRESH_INTERVAL: 'adpulse_refresh_interval',
   CUSTOM_LEADS: 'adpulse_custom_leads',

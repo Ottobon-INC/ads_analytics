@@ -25,7 +25,10 @@ export default function TopBar({
   isRefreshing,
   lastSyncTime,
   error,
-  onToggleMobileSidebar
+  onToggleMobileSidebar,
+  sheetsList,
+  activeSheetId,
+  setActiveSheetId
 }) {
   const [timeAgo, setTimeAgo] = useState('just now');
 
@@ -62,7 +65,7 @@ export default function TopBar({
         zIndex: 9
       }}
     >
-      {/* Left: Tablet Hamburger Trigger & Date Filter */}
+      {/* Left: Tablet Hamburger Trigger & Date Filter & Account Switcher */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
         {/* Hamburger button visible only on Tablet & Mobile */}
         <button
@@ -71,8 +74,33 @@ export default function TopBar({
           style={{ padding: '7px 9px', borderRadius: '8px' }}
           title="Open Menu"
         >
-          <Menu size={18} color="var(--text-primary)" />
         </button>
+
+        {/* Sheet Switcher */}
+        {sheetsList && sheetsList.length > 0 && (
+          <select 
+            value={activeSheetId} 
+            onChange={(e) => setActiveSheetId(e.target.value)}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-subtle)',
+              background: '#F8FAFC',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              outline: 'none',
+              minWidth: '150px'
+            }}
+          >
+            {sheetsList.map((sheet) => (
+              <option key={sheet.id} value={sheet.id}>
+                {sheet.name || 'Unnamed Sheet'}
+              </option>
+            ))}
+          </select>
+        )}
 
         {/* Date Range Selector Pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>

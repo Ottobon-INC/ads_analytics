@@ -16,10 +16,13 @@ import Leads from './pages/Leads';
 import Settings from './pages/Settings';
 import LeadDetailModal from './components/leads/LeadDetailModal';
 
+
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedLead, setSelectedLead] = useState(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
 
   // Data fetching hook connected to user's real Google Sheet
   const {
@@ -30,20 +33,30 @@ export default function App() {
     error,
     lastSyncTime,
     isDemoMode,
+    sheetsList,
+    activeSheetId,
     sheetUrl,
     columnMap,
     refreshInterval,
     dateRange,
     crmOverrides,
-    setSheetUrl,
+    setActiveSheetId,
+    addSheet,
+    removeSheet,
     setColumnMap,
     setRefreshInterval,
     setDateRange,
     updateLeadCRM,
-    refreshData,
+    refreshData: refreshSheetData,
     parseUploadedCSV,
     loadDemoData
   } = useSheetData();
+
+
+
+  const refreshData = () => {
+    refreshSheetData();
+  };
 
   // Metric Computations with useMemo
   const kpis = useMemo(() => {
@@ -119,6 +132,9 @@ export default function App() {
           lastSyncTime={lastSyncTime}
           error={error}
           onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          sheetsList={sheetsList}
+          activeSheetId={activeSheetId}
+          setActiveSheetId={setActiveSheetId}
         />
 
         {/* Dynamic Page Content */}
@@ -159,13 +175,17 @@ export default function App() {
 
               {activeTab === 'settings' && (
                 <Settings
+                  sheetsList={sheetsList}
+                  activeSheetId={activeSheetId}
+                  addSheet={addSheet}
+                  removeSheet={removeSheet}
+                  setActiveSheetId={setActiveSheetId}
                   sheetUrl={sheetUrl}
                   headers={headers}
                   columnMap={columnMap}
                   refreshInterval={refreshInterval}
                   isDemoMode={isDemoMode}
                   lastSyncTime={lastSyncTime}
-                  onSaveSheetUrl={setSheetUrl}
                   onSaveColumnMap={setColumnMap}
                   onSaveRefreshInterval={setRefreshInterval}
                   onUploadCSV={parseUploadedCSV}
