@@ -8,7 +8,6 @@ import {
   BarChart3,
   X 
 } from 'lucide-react';
-import { USER_LIVE_SHEET_URL } from '../../config/sheets';
 
 const NAV_ITEMS = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -20,7 +19,8 @@ export default function Sidebar({
   activeTab, 
   onSelectTab,
   isOpen = false,
-  onClose
+  onClose,
+  sheetUrl
 }) {
   const handleItemClick = (id) => {
     onSelectTab(id);
@@ -140,7 +140,7 @@ export default function Sidebar({
                 <FileSpreadsheet size={15} color="#059669" /> Google Sheet
               </span>
               <a 
-                href={USER_LIVE_SHEET_URL} 
+                href={sheetUrl || '#'} 
                 target="_blank" 
                 rel="noreferrer" 
                 style={{ color: '#4F46E5', display: 'flex', alignItems: 'center' }}

@@ -122,6 +122,7 @@ export default function App() {
         onSelectTab={setActiveTab}
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}
+        sheetUrl={sheetUrl}
       />
 
       {/* Main Content Area */}
@@ -138,6 +139,7 @@ export default function App() {
           sheetsList={sheetsList}
           activeSheetId={activeSheetId}
           setActiveSheetId={setActiveSheetId}
+          sheetUrl={sheetUrl}
         />
 
         {/* Dynamic Page Content */}
@@ -164,6 +166,7 @@ export default function App() {
                   onSelectLead={setSelectedLead}
                   onUpdateStatus={handleUpdateStatus}
                   onNavigateToTab={setActiveTab}
+                  sheetUrl={sheetUrl}
                 />
               )}
 

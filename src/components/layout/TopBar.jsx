@@ -7,7 +7,6 @@ import {
   FileSpreadsheet,
   Menu
 } from 'lucide-react';
-import { USER_LIVE_SHEET_URL } from '../../config/sheets';
 
 const DATE_RANGE_OPTIONS = [
   { id: 'today', label: 'Today' },
@@ -28,7 +27,8 @@ export default function TopBar({
   onToggleMobileSidebar,
   sheetsList,
   activeSheetId,
-  setActiveSheetId
+  setActiveSheetId,
+  sheetUrl
 }) {
   const [timeAgo, setTimeAgo] = useState('just now');
 
@@ -138,7 +138,7 @@ export default function TopBar({
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
         {/* Live Google Sheet Link */}
         <a 
-          href={USER_LIVE_SHEET_URL}
+          href={sheetUrl || '#'}
           target="_blank"
           rel="noreferrer"
           className="btn btn-secondary btn-sm"

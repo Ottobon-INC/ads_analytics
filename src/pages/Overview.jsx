@@ -12,7 +12,6 @@ import ContactSlotBar from '../components/charts/ContactSlotBar';
 import LeadTable from '../components/leads/LeadTable';
 
 import { formatNumberIN } from '../utils/dataTransformers';
-import { USER_LIVE_SHEET_URL } from '../config/sheets';
 import { IndianRupee, MousePointerClick, Activity } from 'lucide-react';
 
 export default function Overview({
@@ -25,7 +24,8 @@ export default function Overview({
 
   onSelectLead,
   onUpdateStatus,
-  onNavigateToTab
+  onNavigateToTab,
+  sheetUrl
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -62,7 +62,7 @@ export default function Overview({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <a 
-            href={USER_LIVE_SHEET_URL}
+            href={sheetUrl || '#'}
             target="_blank" 
             rel="noreferrer" 
             className="btn btn-secondary"
