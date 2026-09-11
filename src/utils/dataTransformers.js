@@ -261,8 +261,9 @@ export function extractLeadList(rows, colMap) {
     const contactTime = getRowVal(row, 'contactTime', colMap) || 'Anytime';
     const time = getRowVal(row, 'time', colMap) || '';
     const date = getRowVal(row, 'date', colMap) || new Date().toLocaleDateString();
+    const speciality = getRowVal(row, 'speciality', colMap) || '—';
     let status = getRowVal(row, 'status', colMap) || 'New';
-    const notes = getRowVal(row, 'notes', colMap) || `Call Slot: ${contactTime}. City: ${city}`;
+    const notes = getRowVal(row, 'notes', colMap) || `Call Slot: ${contactTime}. City: ${city}. Speciality: ${speciality}`;
 
     const lower = String(status).toLowerCase();
     if (lower.includes('contact')) status = 'Contacted';
@@ -282,6 +283,7 @@ export function extractLeadList(rows, colMap) {
       contactTime,
       time,
       date,
+      speciality,
       status,
       notes,
       rawRow: row
@@ -302,7 +304,7 @@ function formatDateShort(dateStr) {
 export function exportToCSV(leads, filename = 'google_sheet_leads.csv') {
   if (!leads || !leads.length) return;
 
-  const headers = ['Timestamp', 'Full Name', 'Phone', 'City', 'Previous Attempts', 'Contact Time', 'Time', 'Status', 'Notes'];
+  const headers = ['Timestamp', 'Full Name', 'Phone', 'City', 'Previous Attempts', 'Contact Time', 'Time', 'Speciality', 'Status', 'Notes'];
   const csvRows = [headers.join(',')];
 
   leads.forEach(lead => {
@@ -314,6 +316,7 @@ export function exportToCSV(leads, filename = 'google_sheet_leads.csv') {
       `"${lead.attempts || 1}"`,
       `"${(lead.contactTime || '').replace(/"/g, '""')}"`,
       `"${(lead.time || '').replace(/"/g, '""')}"`,
+      `"${(lead.speciality || '').replace(/"/g, '""')}"`,
       `"${(lead.status || '').replace(/"/g, '""')}"`,
       `"${(lead.notes || '').replace(/"/g, '""')}"`
     ];

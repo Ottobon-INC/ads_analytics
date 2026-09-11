@@ -211,6 +211,15 @@ export default function LeadDetailModal({
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontWeight: 700 }}>🩺</span> Speciality
+            </span>
+            <span style={{ fontSize: '13px', color: 'var(--text-primary)' }}>
+              {lead.speciality || '—'}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Calendar size={14} /> Submission Date
             </span>
             <span className="mono" style={{ fontSize: '13px', color: 'var(--text-muted)' }}>

@@ -194,6 +194,7 @@ export default function LeadTable({
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Full Name</th>
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Phone Number</th>
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>City</th>
+              <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Speciality</th>
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Preferred Slot</th>
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Attempts</th>
               <th style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontWeight: 600, fontSize: '11px', textTransform: 'uppercase' }}>Date</th>
@@ -204,7 +205,7 @@ export default function LeadTable({
           <tbody>
             {paginatedLeads.length === 0 ? (
               <tr>
-                <td colSpan="8" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                <td colSpan="9" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                   No leads found matching current filters in your Google Sheet.
                 </td>
               </tr>
@@ -259,6 +260,13 @@ export default function LeadTable({
                         <MapPin size={13} color="#4F46E5" />
                         <span>{lead.city}</span>
                       </div>
+                    </td>
+
+                    {/* Speciality */}
+                    <td style={{ padding: '12px 16px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-primary)' }}>
+                        {lead.speciality || '—'}
+                      </span>
                     </td>
 
                     {/* Preferred Slot */}

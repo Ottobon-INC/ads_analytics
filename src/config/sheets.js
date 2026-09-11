@@ -62,6 +62,11 @@ export const DEFAULT_COLUMN_MAP = {
     label: 'Submission Date',
     defaultKey: 'Timestamp',
     aliases: ['timestamp', 'date', 'submission date', 'created at', 'lead date']
+  },
+  speciality: {
+    label: 'Speciality',
+    defaultKey: 'Speciality',
+    aliases: ['speciality', 'specialty', 'department', 'treatment', 'category', 'doctor']
   }
 };
 
@@ -106,6 +111,7 @@ export function generateMockData() {
   const contactSlots = ['Morning', 'Afternoon', 'Evening'];
   const firstNames = ['Aarav', 'Priya', 'Rohan', 'Ananya', 'Vikram', 'Sneha', 'Aditya', 'Neha', 'Rahul', 'Pooja', 'Karan', 'Meera', 'Arjun', 'Divya', 'Siddharth'];
   const lastNames = ['Sharma', 'Patel', 'Verma', 'Reddy', 'Gupta', 'Mehta', 'Nair', 'Singh', 'Chopra', 'Iyer'];
+  const specialities = ['Orthopedics', 'Cardiology', 'Neurology', 'Pediatrics', 'IVF', 'Dermatology'];
 
   const rows = [];
   const today = new Date();
@@ -125,6 +131,7 @@ export function generateMockData() {
       const slot = contactSlots[Math.floor(Math.random() * contactSlots.length)];
       const attempts = Math.floor(Math.random() * 2) + 1;
       const time = slot === 'Morning' ? '10:30 AM' : (slot === 'Afternoon' ? '02:45 PM' : '06:15 PM');
+      const speciality = specialities[Math.floor(Math.random() * specialities.length)];
 
       rows.push({
         'Timestamp': dateStr,
@@ -133,7 +140,8 @@ export function generateMockData() {
         'City': city,
         'Previus Attemps ': attempts,
         'Contact ': slot,
-        'Time': time
+        'Time': time,
+        'Speciality': speciality
       });
     }
   }
