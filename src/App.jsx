@@ -11,6 +11,7 @@ import {
 
 import Sidebar from './components/layout/Sidebar';
 import TopBar from './components/layout/TopBar';
+import MobileBottomNav from './components/layout/MobileBottomNav';
 import Overview from './pages/Overview';
 import Leads from './pages/Leads';
 import Settings from './pages/Settings';
@@ -206,6 +207,12 @@ export default function App() {
         lead={selectedLead}
         onClose={() => setSelectedLead(null)}
         onSaveLead={handleSaveLead}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav 
+        activeTab={activeTab} 
+        onSelectTab={setActiveTab} 
       />
     </div>
   );

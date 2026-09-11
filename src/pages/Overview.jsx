@@ -78,7 +78,7 @@ export default function Overview({
         className="responsive-kpi-grid"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', 
           gap: '16px' 
         }}
       >
@@ -106,7 +106,7 @@ export default function Overview({
         className="responsive-2col"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))', 
           gap: '20px' 
         }}
       >

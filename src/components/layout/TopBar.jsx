@@ -74,6 +74,7 @@ export default function TopBar({
           style={{ padding: '7px 9px', borderRadius: '8px' }}
           title="Open Menu"
         >
+          <Menu size={18} />
         </button>
 
         {/* Sheet Switcher */}
