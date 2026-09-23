@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 8081 : 3001);
 const DATA_FILE = path.join(__dirname, 'sheets.json');
+const CLICKS_DATA_FILE = path.join(__dirname, 'clicks.json');
 
 // Default sheets if the file doesn't exist yet
 const defaultSheets = [
@@ -23,6 +24,11 @@ const defaultSheets = [
 // Initialize sheets.json if not exists
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(defaultSheets, null, 2), 'utf-8');
+}
+
+// Initialize clicks.json if not exists
+if (!fs.existsSync(CLICKS_DATA_FILE)) {
+  fs.writeFileSync(CLICKS_DATA_FILE, JSON.stringify([], null, 2), 'utf-8');
 }
 
 app.use(cors());
@@ -50,6 +56,38 @@ app.post('/api/sheets', (req, res) => {
     res.json({ success: true, message: 'Sheets saved successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to save sheets data' });
+  }
+});
+
+// API Endpoint to Track Clicks
+app.post('/api/track-click', (req, res) => {
+  try {
+    const userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const { elementClicked } = req.body;
+
+    console.log(`[CLICK DETECTED] Element: "${elementClicked}" | IP Address: ${userIp}`);
+
+    // Read existing clicks
+    let clicks = [];
+    if (fs.existsSync(CLICKS_DATA_FILE)) {
+      const data = fs.readFileSync(CLICKS_DATA_FILE, 'utf-8');
+      clicks = JSON.parse(data);
+    }
+
+    // Add new click
+    clicks.push({
+      ip: userIp,
+      element: elementClicked,
+      timestamp: new Date().toISOString()
+    });
+
+    // Save back to file
+    fs.writeFileSync(CLICKS_DATA_FILE, JSON.stringify(clicks, null, 2), 'utf-8');
+
+    res.status(200).json({ success: true, message: "IP captured successfully." });
+  } catch (error) {
+    console.error('Error tracking click:', error);
+    res.status(500).json({ error: 'Failed to track click' });
   }
 });
 

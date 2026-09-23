@@ -13,6 +13,7 @@ services:
       - NODE_ENV=production
     volumes:
       - ./sheets.json:/app/sheets.json
+      - ./clicks.json:/app/clicks.json
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8081/"]
       interval: 30s

@@ -9,6 +9,11 @@ export const GLOBAL_SHEETS = [
     id: 'medcy-ivf-camp',
     name: 'Medcy IVF Camp leads',
     url: 'https://docs.google.com/spreadsheets/d/1LLvUhgc55mqXU0MYirIZhEGdtGJ63o2faOkEdUlyhm4/edit?usp=sharing'
+  },
+  {
+    id: 'other-leads',
+    name: 'Other Leads',
+    url: 'https://docs.google.com/spreadsheets/d/1CqU6pyKF8uT2aHyTZUrGVjXvWjH05SHf3pBFaEraS-w/edit?usp=sharing'
   }
 ];
 
