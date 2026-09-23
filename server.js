@@ -59,6 +59,20 @@ app.post('/api/sheets', (req, res) => {
   }
 });
 
+// API Endpoint to Get Clicks
+app.get('/api/clicks', (req, res) => {
+  try {
+    if (fs.existsSync(CLICKS_DATA_FILE)) {
+      const data = fs.readFileSync(CLICKS_DATA_FILE, 'utf-8');
+      res.json(JSON.parse(data));
+    } else {
+      res.json([]);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read clicks data' });
+  }
+});
+
 // API Endpoint to Track Clicks
 app.post('/api/track-click', (req, res) => {
   try {

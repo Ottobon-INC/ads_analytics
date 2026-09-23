@@ -6,12 +6,14 @@ import {
   FileSpreadsheet, 
   ExternalLink, 
   BarChart3,
-  X 
+  X,
+  Target
 } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'leads', label: 'Leads & CRM', icon: Users },
+  { id: 'clicks', label: 'IP Tracking', icon: Target },
   { id: 'settings', label: 'Sheet Settings', icon: Settings },
 ];
 

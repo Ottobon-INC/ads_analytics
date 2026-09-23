@@ -14,6 +14,7 @@ import TopBar from './components/layout/TopBar';
 import MobileBottomNav from './components/layout/MobileBottomNav';
 import Overview from './pages/Overview';
 import Leads from './pages/Leads';
+import Clicks from './pages/Clicks';
 import Settings from './pages/Settings';
 import LeadDetailModal from './components/leads/LeadDetailModal';
 
@@ -178,6 +179,10 @@ export default function App() {
                   onSelectLead={setSelectedLead}
                   onUpdateStatus={handleUpdateStatus}
                 />
+              )}
+
+              {activeTab === 'clicks' && (
+                <Clicks />
               )}
 
               {activeTab === 'settings' && (

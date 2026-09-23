@@ -1,9 +1,10 @@
 import React from 'react';
-import { LayoutDashboard, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, Target } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'leads', label: 'Leads', icon: Users },
+  { id: 'clicks', label: 'Tracking', icon: Target },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
