@@ -79,6 +79,7 @@ export default function Clicks() {
                 <tr>
                   <th>Timestamp</th>
                   <th>IP Address</th>
+                  <th>Location</th>
                   <th>Element Clicked</th>
                 </tr>
               </thead>
@@ -93,6 +94,7 @@ export default function Clicks() {
                         {click.ip}
                       </span>
                     </td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{click.location || 'Unknown'}</td>
                     <td>{click.element}</td>
                   </tr>
                 ))}

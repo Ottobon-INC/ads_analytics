@@ -74,12 +74,29 @@ app.get('/api/clicks', (req, res) => {
 });
 
 // API Endpoint to Track Clicks
-app.post('/api/track-click', (req, res) => {
+app.post('/api/track-click', async (req, res) => {
   try {
     const userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const { elementClicked } = req.body;
+    
+    // Fallback if IP is IPv6 loopback
+    const ipToLookup = (userIp === '::1' || userIp === '127.0.0.1') ? '' : userIp;
+    
+    let locationStr = 'Unknown';
+    try {
+      // Fetch geolocation from free IP-API
+      const geoResponse = await fetch(`http://ip-api.com/json/${ipToLookup}`);
+      if (geoResponse.ok) {
+        const geoData = await geoResponse.json();
+        if (geoData.status === 'success') {
+          locationStr = `${geoData.city}, ${geoData.country}`;
+        }
+      }
+    } catch (geoError) {
+      console.error('Geolocation fetch error:', geoError.message);
+    }
 
-    console.log(`[CLICK DETECTED] Element: "${elementClicked}" | IP Address: ${userIp}`);
+    console.log(`[CLICK DETECTED] Element: "${elementClicked}" | IP Address: ${userIp} | Location: ${locationStr}`);
 
     // Read existing clicks
     let clicks = [];
@@ -91,6 +108,7 @@ app.post('/api/track-click', (req, res) => {
     // Add new click
     clicks.push({
       ip: userIp,
+      location: locationStr,
       element: elementClicked,
       timestamp: new Date().toISOString()
     });
@@ -98,7 +116,7 @@ app.post('/api/track-click', (req, res) => {
     // Save back to file
     fs.writeFileSync(CLICKS_DATA_FILE, JSON.stringify(clicks, null, 2), 'utf-8');
 
-    res.status(200).json({ success: true, message: "IP captured successfully." });
+    res.status(200).json({ success: true, message: "IP and Location captured successfully." });
   } catch (error) {
     console.error('Error tracking click:', error);
     res.status(500).json({ error: 'Failed to track click' });
