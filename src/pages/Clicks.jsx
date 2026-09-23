@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Target } from 'lucide-react';
+import { Target, MapPin, MousePointerClick, Clock, Monitor } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function Clicks() {
   const [clicks, setClicks] = useState([]);
@@ -37,30 +38,30 @@ export default function Clicks() {
     <div style={{ animation: 'fade-in 0.3s ease-out' }}>
       <div style={{ marginBottom: '24px' }}>
         <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '4px' }}>
-          IP Tracking Log
+          Live IP Tracking
         </h2>
         <p style={{ color: 'var(--text-secondary)' }}>
-          Real-time feed of user clicks captured from your landing page.
+          Real-time feed of user engagement on your landing page.
         </p>
       </div>
 
-      <div className="card">
-        <div style={{ padding: '20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="glass-card">
+        <div style={{ padding: '20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FAFAFA' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', fontWeight: '600' }}>
-            <Target size={18} color="#4F46E5" /> Recent Clicks
+            <Monitor size={18} color="var(--primary)" /> Activity Stream
           </h3>
           <button 
             className="btn btn-primary" 
             onClick={fetchClicks}
             style={{ padding: '8px 16px', fontSize: '13px' }}
           >
-            Refresh Data
+            Refresh Stream
           </button>
         </div>
 
         {loading && clicks.length === 0 ? (
           <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            Loading clicks...
+            Loading live activity...
           </div>
         ) : error ? (
           <div style={{ padding: '40px', textAlign: 'center', color: '#EF4444' }}>
@@ -69,33 +70,57 @@ export default function Clicks() {
         ) : clicks.length === 0 ? (
           <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
             <Target size={40} color="#CBD5E1" style={{ margin: '0 auto 12px' }} />
-            <p>No clicks tracked yet.</p>
-            <p style={{ fontSize: '13px', marginTop: '8px' }}>Once a user clicks the tracked button on your landing page, it will appear here.</p>
+            <p>No activity tracked yet.</p>
+            <p style={{ fontSize: '13px', marginTop: '8px' }}>Waiting for users to interact with your landing page...</p>
           </div>
         ) : (
           <div className="table-responsive">
-            <table className="data-table">
+            <table className="data-table" style={{ borderCollapse: 'collapse', width: '100%' }}>
               <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>IP Address</th>
-                  <th>Location</th>
-                  <th>Element Clicked</th>
+                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--border-subtle)', textAlign: 'left' }}>
+                  <th style={{ padding: '16px 20px', color: 'var(--text-secondary)', fontWeight: '600', fontSize: '13px' }}>Time</th>
+                  <th style={{ padding: '16px 20px', color: 'var(--text-secondary)', fontWeight: '600', fontSize: '13px' }}>IP Address</th>
+                  <th style={{ padding: '16px 20px', color: 'var(--text-secondary)', fontWeight: '600', fontSize: '13px' }}>Location</th>
+                  <th style={{ padding: '16px 20px', color: 'var(--text-secondary)', fontWeight: '600', fontSize: '13px' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {clicks.map((click, index) => (
-                  <tr key={index}>
-                    <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>
-                      {new Date(click.timestamp).toLocaleString()}
+                  <tr key={index} style={{ borderBottom: '1px solid var(--border-subtle)', transition: 'background-color 0.2s', ':hover': { backgroundColor: 'var(--bg-surface-hover)' } }}>
+                    <td style={{ padding: '16px 20px', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-primary)', fontWeight: '500', fontSize: '14px' }}>
+                        <Clock size={14} color="var(--text-muted)" />
+                        {formatDistanceToNow(new Date(click.timestamp), { addSuffix: true })}
+                      </div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '12px', marginTop: '2px', marginLeft: '20px' }}>
+                        {new Date(click.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </td>
-                    <td style={{ fontWeight: '500', color: '#0F172A' }}>
-                      <span style={{ background: '#F1F5F9', padding: '4px 8px', borderRadius: '6px', fontFamily: 'monospace' }}>
+                    <td style={{ padding: '16px 20px' }}>
+                      <span style={{ 
+                        background: 'rgba(79, 70, 229, 0.1)', 
+                        color: 'var(--primary)', 
+                        padding: '6px 10px', 
+                        borderRadius: '6px', 
+                        fontFamily: 'monospace',
+                        fontWeight: '600',
+                        fontSize: '13px'
+                      }}>
                         {click.ip}
                       </span>
                     </td>
-                    <td style={{ color: 'var(--text-secondary)' }}>{click.location || 'Unknown'}</td>
-                    <td>{click.element}</td>
+                    <td style={{ padding: '16px 20px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: click.location === 'Unknown' ? 'var(--text-muted)' : 'var(--text-primary)' }}>
+                        <MapPin size={16} color={click.location === 'Unknown' ? "var(--text-muted)" : "var(--accent-emerald)"} />
+                        {click.location || 'Unknown'}
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px 20px' }}>
+                       <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#F1F5F9', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', color: 'var(--text-secondary)' }}>
+                        <MousePointerClick size={14} color="var(--text-secondary)" />
+                        {click.element}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
